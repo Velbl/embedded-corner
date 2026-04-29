@@ -1,0 +1,3 @@
+# Ignore generated CMSIS/CBuild build outputs and temporary files
+lesson-runner/out/
+lesson-runner/tmp/

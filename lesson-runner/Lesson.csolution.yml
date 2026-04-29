@@ -1,0 +1,42 @@
+solution:
+  created-for: CMSIS-Toolbox@2.12.0
+  cdefault:
+
+  select-compiler:
+    - compiler: AC6
+
+  misc:
+    - for-compiler: AC6
+      C-CPP:
+        - -gdwarf-5
+      ASM:
+        - -gdwarf-5
+
+  packs:
+    - pack: Keil::STM32C0xx_DFP@^2.1.0-0
+    - pack: ARM::CMSIS@^6.0.0
+
+  target-types:
+    - type: STM32C0316-DK
+      device: STMicroelectronics::STM32C031C6Tx
+      target-set:
+        - set: default
+          images:
+            - project-context: Lesson.Debug
+          debugger:
+            name: ST-Link@pyOCD
+            clock: 4000000
+            protocol: swd
+
+  build-types:
+    - type: Debug
+      debug: on
+      optimize: debug
+
+    - type: Release
+      debug: off
+      optimize: balanced
+
+  projects:
+    - project: Lesson.cproject.yml
+  compiler: AC6

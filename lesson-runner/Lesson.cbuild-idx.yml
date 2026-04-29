@@ -1,0 +1,17 @@
+build-idx:
+  generated-by: csolution version 2.13.0+p3-g40b6564e
+  cdefault: ${CMSIS_COMPILER_ROOT}/cdefault.yml
+  csolution: Lesson.csolution.yml
+  cbuild-run: out/Lesson+STM32C0316-DK.cbuild-run.yml
+  tmpdir: tmp
+  cprojects:
+    - cproject: Lesson.cproject.yml
+  cbuilds:
+    - cbuild: out/Lesson/STM32C0316-DK/Debug/Lesson.Debug+STM32C0316-DK.cbuild.yml
+      project: Lesson
+      configuration: .Debug+STM32C0316-DK
+      messages:
+        info:
+          - Lesson.cbuild-pack.yml - file is already up-to-date
+          - Lesson+STM32C0316-DK.cbuild-run.yml - file is already up-to-date
+          - Lesson.Debug+STM32C0316-DK.cbuild.yml - file is already up-to-date

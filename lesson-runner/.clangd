@@ -1,0 +1,7 @@
+CompileFlags:
+  CompilationDatabase: >-
+    /home/vist/Repos/embedded-corner/lesson-runner/out/Lesson/STM32C0316-DK/Debug
+  Add:
+  - '-I/home/vist/Repos/embedded-corner/lesson-runner/device'
+  - '-I/home/vist/Repos/embedded-corner/lesson-runner/RTE/_Debug_STM32C0316-DK'
+  - '-I/home/vist/.cache/arm/packs/ARM/CMSIS/6.3.0/CMSIS/Core/Include'

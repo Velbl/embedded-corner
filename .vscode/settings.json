@@ -1,0 +1,7 @@
+{
+    "clangd.arguments": [
+        "--compile-commands-dir=/home/vist/Repos/embedded-corner/lesson-runner/out/Lesson/STM32C0316-DK/Debug"
+    ],
+    "debug.hideSlowPreLaunchWarning": true,
+    "debug.showInStatusBar": "never"
+}

@@ -1,0 +1,27 @@
+project:
+
+  components:
+    - component: CMSIS:CORE
+
+  add-path:
+    - ./device
+
+  groups:
+    - group: Device
+      files:
+        - file: device/startup_stm32c031xx.s
+        - file: device/system_stm32c0xx.c
+    - group: Source Files
+      files:
+        - file: main.c
+
+  linker:
+    - script:  ./RTE/Device/STM32C031C6Tx/ac6_linker_script.sct.src
+      regions: ./RTE/Device/STM32C031C6Tx/regions_STM32C0316-DK.h
+      for-compiler: AC6
+
+  output:
+    type:
+      - elf
+      - hex
+      - map
