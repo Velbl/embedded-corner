@@ -1,31 +1,34 @@
+#include "stm32c031.h"
+
 // NOTE:
 // NUCLEO-C031C6 registers require using the binary operators
-// such as '|', '&', and '~' that will be explained in lesson-06
+// such as '|', '&', and '~' that will be explained in the
+// next lesson-06
 
 int main(void) {
 
     // enable GPIOA clock port for the LED LD4
-    *((unsigned int *)0x40021034U) |= 0x01U; // RCC IOPENR register
+    RCC_IOPENR_R |= 0x01U;
 
     // NUCLEO-C031C6 board has user LED LD4 on GPIOA pin 5
     // set the LED pin as push-pull output, no pull-up, pull-down
-    *((unsigned int *)0x50000000U) &= ~0xC00U; // GPIOA MODER register
-    *((unsigned int *)0x50000000U) |=  0x400U; // GPIOA MODER register
-    *((unsigned int *)0x50000004U) &= ~0x020U; // GPIOA OTYPER register
-    *((unsigned int *)0x50000008U) &= ~0xC00U; // GPIOA OSPEEDR register
-    *((unsigned int *)0x50000008U) |=  0x400U; // GPIOA OSPEEDR register
-    *((unsigned int *)0x5000000CU) &= ~0xC00U; // GPIOA PUPDR register
+    GPIOA_MODER_R   &= ~0xC00U;
+    GPIOA_MODER_R   |=  0x400U;
+    GPIOA_OTYPER_R  &= ~0x020U;
+    GPIOA_OSPEEDR_R &= ~0xC00U;
+    GPIOA_OSPEEDR_R |=  0x400U;
+    GPIOA_PUPDR_R   &= ~0xC00U;
 
 
     while (1) { // endless loop
-        *((unsigned int *)0x50000018U) = 0x20U; // GPIOA BSRR register
+        GPIOA_BSRR_R = 0x20U; // turn the LED on
 
         int volatile counter = 0;
         while (counter < 500000) {  // delay loop
             ++counter;
         }
 
-        *((unsigned int *)0x50000018U) = 0x200000U; // GPIOA BSRR register
+        GPIOA_BSRR_R = 0x200000U;  // turn the LED off
         counter = 0;
         while (counter < 500000) {  // delay loop
             ++counter;

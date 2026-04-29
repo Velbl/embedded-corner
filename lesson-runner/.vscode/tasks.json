@@ -103,6 +103,52 @@
                 "${command:cmsis-csolution.getCbuildRunFile}"
             ],
             "problemMatcher": []
+        },
+        {
+            "label": "Select Lesson (Python)",
+            "type": "shell",
+            "command": "python3",
+            "options": {
+                "cwd": "${workspaceFolder}/lesson-runner",
+                "shell": {
+                    "executable": "/bin/bash",
+                    "args": [
+                        "-c"
+                    ]
+                }
+            },
+            "args": [
+                "build_lesson.py"
+            ],
+            "isBackground": false,
+            "presentation": {
+                "reveal": "always",
+                "panel": "shared"
+            },
+            "problemMatcher": []
+        },
+        {
+            "label": "Select Lesson (Bash)",
+            "type": "shell",
+            "command": "bash",
+            "options": {
+                "cwd": "${workspaceFolder}/lesson-runner",
+                "shell": {
+                    "executable": "/bin/bash",
+                    "args": [
+                        "-c"
+                    ]
+                }
+            },
+            "args": [
+                "build-lesson.sh"
+            ],
+            "isBackground": false,
+            "presentation": {
+                "reveal": "always",
+                "panel": "shared"
+            },
+            "problemMatcher": []
         }
     ]
 }
