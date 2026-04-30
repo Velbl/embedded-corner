@@ -85,3 +85,54 @@ Program counter register which holds the addres from which the CPU will fetch it
 
 # Q01-4: How many bits is stored in one nibble?
 4 bits, it is directly mapped to HEX digit.
+
+[Lesson-02]:
+# Q02-1: Write a C function that returns how many odd elements are in array of N elements.
+Provided function signature: size_t count_odd(const int *arr, size_t n); 
+
+Answer:
+size_t count_odd(const int *arr, size_t n)
+{
+    size_t count = 0u;
+    for (size_t i = 0; i < n; i++)
+    {
+        cnt += (arr[i] & 1);
+    }
+    return cnt;
+}
+
+Optional follow-ups:   
+1. Why & 1 instead of % 2?
+x & 1 is always 0 or 1. 
+x % 2 is -1, 0, or 1. 
+
+Two's complement encodes parity in the low bit.
+
+The second one is a footgun: if (x % 2 == 1) is the kind of bug that ships, gets misdescribed in a ticket, and survives three code reviews because it "looks fine" to anyone thinking in unsigned. & 1 removes the trap entirely.
+
+2. What happens if arr == NULL?                                                       
+With n == 0 the loop never runs, return is 0 — safe. With n > 0 and arr == NULL it's
+undefined behavior.
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+

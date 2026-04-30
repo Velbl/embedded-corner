@@ -16,6 +16,9 @@ Nibble is directly mapped to hex digits.
 2s complement representation: 
 0x00000001 -> 1, 0x7FFFFFFF -> INT_MAX, 0x80000000 -> INT_MIN, 0xFFFFFFFF -> -1
 
+[Lesson-02] (30.04.2026.):
+"Typically it's much easier to back up to the working version than to try to fix broken code." - Miro Samek
+APSR - Application Program Status Register
 
 # Deep dives (30.04.2026):
 [MCU-less-GCC-usage]
