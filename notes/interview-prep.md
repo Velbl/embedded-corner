@@ -2,7 +2,7 @@
 # Goal is to have everything summarized at one place so later preparation for interview is smooth like a smooooth operatooor. 
 # Be well structured, you are not explaining to a child anymore.
 
-[General]:
+# [General]:
 # GQ1: Explain me compilation process?
 Answer: Compilation process is a four-stage pipeline: preprocess -> compile -> assemble -> link.
 The first three operate on one source file at a time (translatin unit) and produce machine code with placeholders. The linker is the part that turns many obect files plus libraries into one image: it resolves cross-file symbol references and lays sectins out at concrete addresses according to the linker script (or default).
@@ -71,7 +71,7 @@ Key concepts:
 processes, OpenOCD+probe for chips). The frontend just sends commands over a socket. That's why one gdb binary debugs everything from a Linux
 process to a Cortex-M to a remote aarch64 SoC.
 
-[Lesson-01]:
+# [Lesson-01]:
 # Q01-1: What is the representation of the 1 and -1 in 2s complement on 32bit system?
  1 = 0x00000001 (2^0)
 -1 = 0xFFFFFFFF (-2^31 + 2^30 + ... + 2^0)
@@ -86,7 +86,7 @@ Program counter register which holds the addres from which the CPU will fetch it
 # Q01-4: How many bits is stored in one nibble?
 4 bits, it is directly mapped to HEX digit.
 
-[Lesson-02]:
+# [Lesson-02]:
 # Q02-1: Write a C function that returns how many odd elements are in array of N elements.
 Provided function signature: size_t count_odd(const int *arr, size_t n); 
 
@@ -115,6 +115,10 @@ With n == 0 the loop never runs, return is 0 — safe. With n > 0 and arr == NUL
 undefined behavior.
 
 
+# [Lesson-03]:
+# Q03-1: When you cast a literal address to a pointer for an MMIO register, why is it almost always wrong to omit `volatile`?
+Without volatile, the compiler assumes the value at that address only changes when *your code* writes it. So it may cache reads in a register, drop "redundant" loads, or reorder accesses. For a peripheral register, the value can change because the hardware updated it (a status bit flipping after a DMA transfer), and write order matters (configuring
+CR1 before CR2 is not interchangeable with the reverse). `volatile` tells the compiler "every read must come from memory, every write must go to memory, no reordering across these accesses." That's why MMIO code is always `*(volatile uint32_t *)0x40021000 = value;` — the bare cast without volatile is a latent bug waiting for -O2 to expose it.
 
 
 
