@@ -1,4 +1,4 @@
-# Document all the issues and interesting things related to setup/build/toolchain/language stuff which can help you become the best "colleague to ask".
+# Document all the issues related to setup/build/toolchain/language stuff which can help you become the best "colleague to ask".
 
 # Issue 1 [Linux]: pyOCD can't open the probe because your user doesn't have raw USB access to it. Fix with udev rules.
 Solution:
