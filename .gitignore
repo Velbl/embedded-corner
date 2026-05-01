@@ -11,3 +11,6 @@ lesson-runner/*.cbuild.yml
 
 # Host-build outputs from scripts/Makefile
 scripts/build/
+
+# Personal Claude Code context (not for sharing)
+CLAUDE.md
