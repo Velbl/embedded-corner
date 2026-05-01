@@ -3,5 +3,11 @@ lesson-runner/out/
 lesson-runner/tmp/
 lesson-runner/main.c
 
+# cbuild-generated yml (regenerated each build; contain absolute paths)
+# Keep Lesson.cbuild-pack.yml tracked — it's the pack-version lockfile.
+lesson-runner/*.cbuild-idx.yml
+lesson-runner/*.cbuild-run.yml
+lesson-runner/*.cbuild.yml
+
 # Host-build outputs from scripts/Makefile
 scripts/build/
