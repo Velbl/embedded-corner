@@ -177,3 +177,10 @@ static inline void toggle_bit(volatile uint32_t *reg, unsigned n)
 }
 
 ^= is XOR-with-mask: same RMW pattern as set/clear (LDR/EOR/STR), same non-atomic property. Unlike set/clear there's no atomic-toggle register on STM32 GPIO — BSRR can do "set" or "reset" but not "flip whatever's there", because that would require reading current state inside the same transaction.
+
+# [Lesson-05]
+# Q05-1: What is volatile type qualifier and for what is it used?
+Volatile tells compiler "this object can change outside the normal program flow - don't optimize accesses to it". It avoids compiler optimization rules. 
+It is used for memmory mapped I/Os, variables shared with and ISR, variables modified by DMA and busy/wait delay loops.
+# Q05-2: A for loop counting up to 1,000,000 with no body — when does this work as a delay and when does it not?
+It works only if the counter is volatile (or the loop has another observable side effect). Without that, any optimizer at -O1 or above deletes the loop entirely — the counter is dead, the body is empty, no side effects.

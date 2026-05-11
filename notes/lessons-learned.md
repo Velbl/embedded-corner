@@ -77,6 +77,24 @@ For atomic bit set/reset, the output data register (OD) bits can be individually
 GPIOx_BSRR register (x = A, B, C, D, F).
     *((unsigned int *)0x50000018U) = 0x20U; // Set GPIOA_BSRR , don't use "|=" operator because this register is write only and "|=" is read-modify-write operation while "=" is write only operation.  
 
+# [Lesson-05] (11.05.2026.)
+Usage of macro definitions for better scalability and maintainability of projects.
+Volatile - informs compiler that the object might change even if the state in program is not change (by external event). By this, compiler will not optimize r/w operations on volatile variable it will always check it out.
+Recommendation - place volatile after the type.
+
+Additional option on how to configure registers:
+#define LED_PIN       5U
+#define MODER_OUTPUT  0x1U
+#define MODER_MASK    0x3U
+#define PUPDR_MASK    0x3U
+RCC_IOPENR_R |= (1U << 0);   // GPIOAEN
+GPIOA_MODER_R   = (GPIOA_MODER_R   & ~(MODER_MASK << (LED_PIN*2))) |
+                  (MODER_OUTPUT    <<  (LED_PIN*2));
+GPIOA_OTYPER_R &= ~(1U << LED_PIN);
+GPIOA_PUPDR_R  &= ~(PUPDR_MASK << (LED_PIN*2));
+
+Wins: pin number appears once, no hex-arithmetic in your head (5*2 = 10, 0x3 << 10 =0xC00), and renaming PIN doesn't require recomputing five masks.
+
 # Deep dives (30.04.2026)
 [MCU-less-GCC-usage]
 For the portable C files with no MCU dependency (no vector table, no startup file, no register info) we can use machine's gcc and produce native Linux x86-64 ELF file. This will run as a linux process.
