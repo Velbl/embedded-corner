@@ -95,6 +95,20 @@ GPIOA_PUPDR_R  &= ~(PUPDR_MASK << (LED_PIN*2));
 
 Wins: pin number appears once, no hex-arithmetic in your head (5*2 = 10, 0x3 << 10 =0xC00), and renaming PIN doesn't require recomputing five masks.
 
+# [Lesson-06] (11.05.2026.)
+For signed int numbers bit shifts works different than for unsigned int numbers.
+ -> right shift on negative numbers adds ones to the most significat bits!!! 0x1000 -> -x1110 ( >> 2) and this is called sign-extending of a negative value in 2's complement
+
+Sign-extending is necessary to preserve correspondence between right-shifting and division by a power of 2.
+
+LSRS -> logical right shift (right shifting on unsigned numbers)
+ASRS -> arithmetic right shift (right shifting on signed numbers)
+
+|= "bit set idiom" -> for this we need to have read/write permissions in specific register.
+&=~ "bit clear idiom" -> compiler will use BIC (bit clear) operation instead of doing AND and NOT 
+
+setting and clearig of the bit are the sequence of the load-modify-store operations
+
 # Deep dives (30.04.2026)
 [MCU-less-GCC-usage]
 For the portable C files with no MCU dependency (no vector table, no startup file, no register info) we can use machine's gcc and produce native Linux x86-64 ELF file. This will run as a linux process.

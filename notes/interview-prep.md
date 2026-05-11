@@ -184,3 +184,13 @@ Volatile tells compiler "this object can change outside the normal program flow 
 It is used for memmory mapped I/Os, variables shared with and ISR, variables modified by DMA and busy/wait delay loops.
 # Q05-2: A for loop counting up to 1,000,000 with no body — when does this work as a delay and when does it not?
 It works only if the counter is volatile (or the loop has another observable side effect). Without that, any optimizer at -O1 or above deletes the loop entirely — the counter is dead, the body is empty, no side effects.
+
+# [Lesson-06]
+# Q06-1: Explain me the difference between arithmetic and logical right shift?
+Right shift on negative numbers adds ones to the most significat bits!!! 
+For example: 0x1000 -> -x1110 ( >> 2) and this is called sign-extending of a negative value in 2's complement.
+
+Sign-extending is necessary to preserve correspondence between right-shifting and division by a power of 2.
+
+And outcome of this is the usage of ARSR (arithmetic right shift) instructions instead of LSRS (logical right shifting).
+
