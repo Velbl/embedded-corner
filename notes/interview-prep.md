@@ -194,3 +194,20 @@ Sign-extending is necessary to preserve correspondence between right-shifting an
 
 And outcome of this is the usage of ARSR (arithmetic right shift) instructions instead of LSRS (logical right shifting).
 
+# [Lesson-07]
+# Q07-1: Explain the difference between the pointer and address arithmetic?
+C pointer arithmetic scales by the size of what's pointed to, but raw address arithmetic does not.
+
+The classic trap:
+
+uint32_t *p = (uint32_t *)0x40021000;
+p + 0x34;                       // WRONG: 0x40021000 + 0x34*4 = 0x400210D0
+(uint32_t *)((uintptr_t)p + 0x34); // RIGHT: 0x40021034
+
+Bonus: array indexing is is just nicer writing of pointer arithmetic because pointer is the same as the address of the arrays zero element.
+
+# Q07-2: What is bit-banding?
+Bit-banding is the same as "spend address space for atomicity".
+One bit get's its own 32-bit word.
+The CPU has a small "real" memory region and a giant aliased "vitual" region. Each bit in the real region is mapped to one word in the alias region.
+One STR instructon, atomic, no read-modify-write.

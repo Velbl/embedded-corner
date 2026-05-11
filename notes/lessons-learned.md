@@ -107,7 +107,30 @@ ASRS -> arithmetic right shift (right shifting on signed numbers)
 |= "bit set idiom" -> for this we need to have read/write permissions in specific register.
 &=~ "bit clear idiom" -> compiler will use BIC (bit clear) operation instead of doing AND and NOT 
 
-setting and clearig of the bit are the sequence of the load-modify-store operations
+setting and clearig of the bit are the sequence of the read-modify-write (LDR,ORR/BIC, STR) operations
+
+# [Lesson-07] (11.06.2026.)
+How to replace read-modify-write sequence with single and atomic write operation? 
+By using pointers. They are simplifying read-modify-write operation sequence to just STR instruction to the specific address.  
+
+Why to do this?
+Read-modify-write sequence is fast enough for most cases, so, this is not about speed but about the ability to manipulate the individual bits independently from any part of the code (also from interrupts).
+Issue happens when ISR happens between read and modify operations, ISR update bit but main program still uses previous values so main program doesn't see the change.
+
+All the GPIO bits are connected to the CPU via data and address bus lines.
+Bit can be changed when the connected address line is 1 otherwise bit is isolated.
+
+ Pointer-arithmetic:
+ int counter [2] = {};
+*(counter + 1)
+ 
+ Diff between address arithmetic and pointer arithmetic:
+ address arithmetic: *((unsigned long volatile *)(  + (LED_RED << 2))) = LED_RED;
+ pointer arithmetic: *(GPIO_PORTF + LED_READ) = LED_RED; 
+ array indexing: GPIO_PORTF[LED_RED] = LED_READ;
+
+ In address arithmetic we perform address arithmetic first and only than you cast the raw address to the unsigned long pointer. In this case you have to left-shift the LED_RED value by 2 bits, to take into account the size of the GPIO register, which is 4 byte wide.
+ In pointer arithmetic we use pointer arithmetic becase GP_PORTF is a pointer to the unsigned long and here we don't need to scale the offset by the size of the element.
 
 # Deep dives (30.04.2026)
 [MCU-less-GCC-usage]
