@@ -5,14 +5,41 @@
 # [General]
 # GQ1: Explain me compilation process?
 Answer: Compilation process is a four-stage pipeline: preprocess -> compile -> assemble -> link.
-The first three operate on one source file at a time (translatin unit) and produce machine code with placeholders. The linker is the part that turns many obect files plus libraries into one image: it resolves cross-file symbol references and lays sectins out at concrete addresses according to the linker script (or default).
-.c -> preprocessor expand includes, macroes etc... -> .i -> compiler parse, optimize, generate target assembly -> .s -> assembler encode instructions to bytes, build symbol table + relocation recors, group output into sections (.text, .rodata, .data, .bss .debug_*) -> .o -> linker resolve every undefined symbol, apply relocations, place sections ar linker-script addrs (FLASH, RAM, etc...), emit final symbol table + DWARF, emit map file -> .map and .elf
+The first three operate on one source file at a time (translatin unit) and produce machine code with placeholders. The linker is the part that turns many obect files plus libraries into one image: it resolves cross-file symbol references and lays sections out at concrete addresses according to the linker script (or default).
+
+
+  ┌──────────────┬───────────┬─────────────┬────────────────────────────────────────────────────────────────────────┐
+  │    Phase     │   Input   │   Output    │                              What it does                              │
+  ├──────────────┼───────────┼─────────────┼────────────────────────────────────────────────────────────────────────┤
+  │ Preprocessor │ .c        │ .i          │ Expand #include, #define, #if directives                               │
+  ├──────────────┼───────────┼─────────────┼────────────────────────────────────────────────────────────────────────┤
+  │ Lexer        │ chars     │ tokens      │ Group characters into identifiers / literals / operators               │
+  ├──────────────┼───────────┼─────────────┼────────────────────────────────────────────────────────────────────────┤
+  │ Parser       │ tokens    │ AST         │ Check grammar, build a tree of program structure                       │
+  ├──────────────┼───────────┼─────────────┼────────────────────────────────────────────────────────────────────────┤
+  │ Semantic     │ AST       │ AST + types │ Name resolution, type checking, insert implicit casts                  │
+  ├──────────────┼───────────┼─────────────┼────────────────────────────────────────────────────────────────────────┤
+  │ IR-gen       │ AST       │ IR          │ Transform AST to IR                                                    │
+  ├──────────────┼───────────┼─────────────┼────────────────────────────────────────────────────────────────────────┤
+  │ Optimize     │ IR        │ IR          │ Here compiler optimization is done                                     │
+  ├──────────────┼───────────┼─────────────┼────────────────────────────────────────────────────────────────────────┤
+  │ Code-gen     │ IR        │ .s          │ Instruction selection + register allocation for the target ISA         │
+  ├──────────────┼───────────┼─────────────┼────────────────────────────────────────────────────────────────────────┤
+  │ Assembler    │ .s        │ .o          │ Encode mnemonics to bytes, build symbol table, emit relocation records │
+  ├──────────────┼───────────┼─────────────┼────────────────────────────────────────────────────────────────────────┤
+  │ Linker       │ .o + libs │ .elf        │ Place sections at final addresses, patch relocations, emit DWARF + map │
+  └──────────────┴───────────┴─────────────┴────────────────────────────────────────────────────────────────────────┘
 
 Key concepts:
-- Translation unit: what a compiler sees: one.c file plus everything its includes drag in. EachTU compiles independently into one .o. The compiler never sees the whole program.
+- Lexer: lexical analysis, characters to tokens
+- Parser-syntax analysis: tokens to abstract syntac tree (AST). It catches for example: "expected ';'".
+- Parset-semantics analysis: decorate AST with types, scopes, implicit conversions. It catches for examples: "assignment to incompatible pointer type".
+- Instruction Set Architecture (ISA): agreement between hardware and software
+- Intermediate Representation (IR): compiler language used to abstract compilation process from written code (to be generic)
+- Translation unit: what a compiler sees: one.c file plus everything its includes drag in. Each TU compiles independently into one .o. The compiler never sees the whole program.
 - Symbol: a named address: every function and global. Either defined (the .o containing the body) or undefined (referenced here, defined elsewhere - the linker's job to bind).
 - Section: labeled chunks of an object/ELF: .text (code), .rodata (consts), .data (initialized globals), .bss (zero-init globals - no bytes in the file, just length), .debug_* (DWARF). The linker concatenates same-named sections across all .o files and assings each a final load address.
-- Relocation: a "fix this address later" record. When main.c calls foo() defined in foo.c, the assembler can't know foo's final address, so it emits the instruction with a placeholder plus a relocation entry. The linker patches it once it;s decided where foo lives.
+- Relocation: a "fix this address later" record. When main.c calls foo() defined in foo.c, the assembler can't know foo's final address, so it emits the instruction with a placeholder plus a relocation entry. The linker patches it once it's decided where foo lives.
 - Linker script: declares the target's memory regions (FLASH 0x08000000 LEN 64K, RAM 0x20000000 LEN 8K) and which sections go where. Without one, ld uses a default that assumes a hosted OS. Bare-metal requires a custom script (and a startup file that copies .dat from FLASH to RAM and zeroes .bss before main).
 
 # GQ2: Explain me flashing process?
