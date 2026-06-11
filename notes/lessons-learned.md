@@ -109,7 +109,7 @@ ASRS -> arithmetic right shift (right shifting on signed numbers)
 
 setting and clearig of the bit are the sequence of the read-modify-write (LDR,ORR/BIC, STR) operations
 
-# [Lesson-07] (11.06.2026.)
+# [Lesson-07] (11.05.2026.)
 How to replace read-modify-write sequence with single and atomic write operation? 
 By using pointers. They are simplifying read-modify-write operation sequence to just STR instruction to the specific address.  
 
@@ -131,6 +131,17 @@ Bit can be changed when the connected address line is 1 otherwise bit is isolate
 
  In address arithmetic we perform address arithmetic first and only than you cast the raw address to the unsigned long pointer. In this case you have to left-shift the LED_RED value by 2 bits, to take into account the size of the GPIO register, which is 4 byte wide.
  In pointer arithmetic we use pointer arithmetic becase GP_PORTF is a pointer to the unsigned long and here we don't need to scale the offset by the size of the element.
+
+# [Lesson-08] (11.06.2026.)
+If optimization is not set to LOW, simple while loop in function will cause inlining of the function.
+
+Call to defined function boils down to just one instruction called -> BL (branch instruction). BL simply changes the value of PC reg and also it saves the address of the next instruction to the R14 reg (or LR - link register) so program knows where to return after function is done.
+
+Function starts with adjusting the R13 (or SP -stack pointer) reg. The SP is HW implementation of C call stack mechanism. Call stack is a simple area of RAM that can grow or shrink from one end only. SP contatins this top address (end = top of the stack).
+Subtracting 4 from the SP grows the stack by this amount and creates space for the new variable at the
+top of the stack.
+
+Return from the function is done via branch instruction (BX - branch and exchange) reg. This instruction sets the PC to the value stored in the LR reg
 
 # Deep dives (30.04.2026)
 [MCU-less-GCC-usage]

@@ -8,27 +8,24 @@ Answer: Compilation process is a four-stage pipeline: preprocess -> compile -> a
 The first three operate on one source file at a time (translatin unit) and produce machine code with placeholders. The linker is the part that turns many obect files plus libraries into one image: it resolves cross-file symbol references and lays sections out at concrete addresses according to the linker script (or default).
 
 
-  ┌──────────────┬───────────┬─────────────┬────────────────────────────────────────────────────────────────────────┐
-  │    Phase     │   Input   │   Output    │                              What it does                              │
-  ├──────────────┼───────────┼─────────────┼────────────────────────────────────────────────────────────────────────┤
-  │ Preprocessor │ .c        │ .i          │ Expand #include, #define, #if directives                               │
-  ├──────────────┼───────────┼─────────────┼────────────────────────────────────────────────────────────────────────┤
-  │ Lexer        │ chars     │ tokens      │ Group characters into identifiers / literals / operators               │
-  ├──────────────┼───────────┼─────────────┼────────────────────────────────────────────────────────────────────────┤
-  │ Parser       │ tokens    │ AST         │ Check grammar, build a tree of program structure                       │
-  ├──────────────┼───────────┼─────────────┼────────────────────────────────────────────────────────────────────────┤
-  │ Semantic     │ AST       │ AST + types │ Name resolution, type checking, insert implicit casts                  │
-  ├──────────────┼───────────┼─────────────┼────────────────────────────────────────────────────────────────────────┤
-  │ IR-gen       │ AST       │ IR          │ Transform AST to IR                                                    │
-  ├──────────────┼───────────┼─────────────┼────────────────────────────────────────────────────────────────────────┤
-  │ Optimize     │ IR        │ IR          │ Here compiler optimization is done                                     │
-  ├──────────────┼───────────┼─────────────┼────────────────────────────────────────────────────────────────────────┤
-  │ Code-gen     │ IR        │ .s          │ Instruction selection + register allocation for the target ISA         │
-  ├──────────────┼───────────┼─────────────┼────────────────────────────────────────────────────────────────────────┤
-  │ Assembler    │ .s        │ .o          │ Encode mnemonics to bytes, build symbol table, emit relocation records │
-  ├──────────────┼───────────┼─────────────┼────────────────────────────────────────────────────────────────────────┤
-  │ Linker       │ .o + libs │ .elf        │ Place sections at final addresses, patch relocations, emit DWARF + map │
-  └──────────────┴───────────┴─────────────┴────────────────────────────────────────────────────────────────────────┘
+Per source file (translation unit):
+
+    .c  ──[1 preprocess]──▶  .i  ──[2 compile]──▶  .s  ──[3 assemble]──▶  .o
+
+Then once for the whole program:
+
+    main.o + foo.o + libs  ──[4 link]──▶  app.elf
+
+Stage 2 (compile) is itself a pipeline:
+
+    .i  ─▶  lex  ─▶  parse  ─▶  semantic  ─▶  IR-gen  ─▶  optimize  ─▶  code-gen  ─▶  .s
+
+| # | Stage      | In        | Out  | What it does                                         |
+|---|------------|-----------|------|------------------------------------------------------|
+| 1 | Preprocess | .c        | .i   | Expand #include, #define, #if                        |
+| 2 | Compile    | .i        | .s   | Source → assembly (lex→parse→semantics→IR→opt→codegen)|
+| 3 | Assemble   | .s        | .o   | Encode mnemonics, symbol table, relocations          |
+| 4 | Link       | .o + libs | .elf | Place sections at final addresses, patch relocs, DWARF|
 
 Key concepts:
 - Lexer: lexical analysis, characters to tokens
@@ -238,3 +235,6 @@ Bit-banding is the same as "spend address space for atomicity".
 One bit get's its own 32-bit word.
 The CPU has a small "real" memory region and a giant aliased "vitual" region. Each bit in the real region is mapped to one word in the alias region.
 One STR instructon, atomic, no read-modify-write.
+
+# [Lesson-08]
+# Q08-1:
