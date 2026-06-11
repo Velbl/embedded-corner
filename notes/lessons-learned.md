@@ -151,6 +151,16 @@ AAPCS - ARM Application Procedure Call Standard - for example: both sides must h
 
 AAPCS - Registers R0-R3 and R12 are used for passing arguments and returning the values and can be clobbered by a function.
 The function must perserve 8 registers R4-R11, this doesn't mean that the function can not use these 8 regs, but if it does the function code must save them on the stack and restore before returning.
+
+# [Lesson-10] (11.06.2026.)
+The stack is a sack of DIRTY dishes. Allocating a local makes room but never cleans it, so the leftover bytes are old RAM (often the flash-loader image). => every automatic variable holds garbage until you explicitly initialize it.
+
+Stack overflow: recurse/allocate too much and SP walks below the start of RAM (0x2000_0000). Next access to non-existent memory -> BusFault -> CPU stuck in an endless loop inside the exception handler. Habit: when the program hangs in a HW exception, check SP first. Overflow can also just silently corrupt data (no fault) which is much nastier to find.
+
+Out-of-bounds array write = stack corruption. foo[6] in a size-6 array lands on the saved LR (return address). C does NOT check array bounds. The corrupted return address sent execution running through the vector.
+
+Returning a pointer to a LOCAL variable is always a bug: the local is on the stack, goes out of scope on return, and ends up ABOVE SP - the next call reuses that memory and overwrites it. Fix: make the local `static` so it lives in RAM (data section) outside the stack and outlives the call.
+
 # Deep dives (30.04.2026)
 [MCU-less-GCC-usage]
 For the portable C files with no MCU dependency (no vector table, no startup file, no register info) we can use machine's gcc and produce native Linux x86-64 ELF file. This will run as a linux process.

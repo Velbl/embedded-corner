@@ -253,3 +253,19 @@ unsigned fact (unsigned n)
         return n*fac(n-1U);
     }
 }
+
+# [Lesson-10]
+# Q10-1: A freshly-allocated local variable - what's its initial value, and why?
+Garbage. Allocating a stack frame reserves the space but never zeroes it, so the local sees whatever was last written to that RAM. Never rely on implicit initialization of automatic variables; explicitly initialize them. (Contrast: static/global lives in .bss and IS zeroed by startup code.)
+
+# Q10-2: Program hangs spinning in a hardware exception handler. First thing you check?
+The stack pointer. If SP has walked below the valid RAM range, you've got a stack overflow - the fault came from accessing non-existent memory.
+
+# Q10-3: How does an out-of-bounds array write corrupt the return address, and why can the symptom appear thousands of cycles later?
+A local array lives on the stack right next to the function's saved LR. Writing past the end (C does no bounds checking) overwrites the saved return address. The function then returns to a random PC and the CPU executes whatever happens to be there - it can run for thousands of cycles (even through the vector table interpreted as code) before finally hitting an illegal access. That delay + coincidence-dependence is why stack corruption is so hard to reproduce.
+
+# Q10-4: Why is returning a pointer to a local variable wrong, and what's the fix?
+The local is allocated on the stack and goes out of scope when the function returns - its memory ends up above SP and gets reused/overwritten by the next call, so the returned pointer dangles. Fix: declare the local `static`, which moves it out of the stack into the data section so it outlives the call.
+
+# Q10-5: C passes arguments by value - so how does swap(&x, &y) actually change the caller's variables?
+The "by value" copy is the pointer itself: swap receives copies of the addresses of x and y, not copies of their contents. Dereferencing (*x, *y) reaches back through those addresses to the caller's actual storage, so the writes land on the originals. The function still can't change which addresses it was handed - only what they point to.
