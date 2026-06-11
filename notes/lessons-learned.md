@@ -143,6 +143,14 @@ top of the stack.
 
 Return from the function is done via branch instruction (BX - branch and exchange) reg. This instruction sets the PC to the value stored in the LR reg
 
+# [Lesson-09] (11.06.2026.)
+When recursing, stack is not POP-ed before calling recursing the function which keeps stack increasing until recursion is done.
+Stack unwinds happens afer recursion is finished.
+
+AAPCS - ARM Application Procedure Call Standard - for example: both sides must have an understanding that the return address will be provided to function in the LR reg, also both parties must agree that the first arg will be passed in R0 and that return value will be returned in R0 reg as well. 
+
+AAPCS - Registers R0-R3 and R12 are used for passing arguments and returning the values and can be clobbered by a function.
+The function must perserve 8 registers R4-R11, this doesn't mean that the function can not use these 8 regs, but if it does the function code must save them on the stack and restore before returning.
 # Deep dives (30.04.2026)
 [MCU-less-GCC-usage]
 For the portable C files with no MCU dependency (no vector table, no startup file, no register info) we can use machine's gcc and produce native Linux x86-64 ELF file. This will run as a linux process.

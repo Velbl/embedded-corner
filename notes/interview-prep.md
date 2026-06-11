@@ -237,4 +237,19 @@ The CPU has a small "real" memory region and a giant aliased "vitual" region. Ea
 One STR instructon, atomic, no read-modify-write.
 
 # [Lesson-08]
-# Q08-1:
+# Q08-1: For what stack is used?
+First it holds the local variables of the function called, and second it stores the return address.
+
+# [Lesson-09]
+# Q09-1: Write factoriel function?
+unsigned fact (unsigned n)
+{
+    if(n==0)
+    {
+        return 1U;
+    }
+    else
+    {
+        return n*fac(n-1U);
+    }
+}
